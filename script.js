@@ -4,7 +4,7 @@
 // @version    0.7
 // @description  www
 // @match      http://pikabu.ru/*
-// @match       http://d3.ru/*
+// @match       http://*.d3.ru/*
 // @copyright  Omg OMG
 // @noframes
 // ==/UserScript==
@@ -41,7 +41,7 @@
         var style = '<style>.as223123widget{position: fixed;top: 40%;right: 10px;width: 175px;height: 60px;border-radius: 5px;' +
             ' background: radial-gradient(black 15%,transparent 16%) 0 0,radial-gradient(black 15%,transparent 16%) 8px 8px,radial-gradient(rgba(255,255,255,.1) 15%,' +
             'transparent 20%) 0 1px,radial-gradient(rgba(255,255,255,.1) 15%,transparent 20%) 8px 9px;' +
-            'background-color: #282828;background-size: 16px 16px;}' +
+            'background-color: #282828;background-size: 16px 16px;z-index: 5000;}' +
             ' .next23, .counter23{color: red;font-weight: bold;margin: 10px 0 0 20px;display: inline-block; cursor:pointer;}' +
             ' .total23{color: white; text-align: center; margin-top: 5px; } </style>';
 
@@ -86,13 +86,20 @@
                             comments_id.push('#' + this_parentId);
                     });
                 }
+                if(_that.main.isDirty()){
+                    $(_that.settings.selectors.dirty).find('a').each(function(){
+                        var this_parentId = $(this).parents('.comment').attr('id');
+                        if (this_parentId != undefined)
+                            comments_id.push('#' + this_parentId);
+                    });
+                }
             },
             paint: function () {
                 if (_that.main.isPika()) {
                     $(_that.settings.selectors.pikabu).find('a').css('background', '#B7E3F8');
                 }
                 if (_that.main.isDirty()) {
-                    dirty.find('a').css('background', '#B7E3F8');
+                    $(_that.settings.selectors.dirty).find('a').css('background', '#B7E3F8');
                 }
             },
             jump: function (h) {
