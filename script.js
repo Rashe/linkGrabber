@@ -19,13 +19,14 @@
 (function () {
     var linkgrab = function () {
         var _that = this;
-        var output = [], comments_id = [], cur_comment = 1;
+        var output = [], comments_id = [], cur_comment = 0;
         this.settings = {
 
             degug: true,
             selectors: {
                 pikabu: '.comment_desc',
                 next: '.next23',
+                prev: '.prev23',
                 counter: '.counter23',
 
 
@@ -42,7 +43,7 @@
             ' background: radial-gradient(black 15%,transparent 16%) 0 0,radial-gradient(black 15%,transparent 16%) 8px 8px,radial-gradient(rgba(255,255,255,.1) 15%,' +
             'transparent 20%) 0 1px,radial-gradient(rgba(255,255,255,.1) 15%,transparent 20%) 8px 9px;' +
             'background-color: #282828;background-size: 16px 16px;z-index: 5000;}' +
-            ' .next23, .counter23{color: red;font-weight: bold;margin: 10px 0 0 20px;display: inline-block; cursor:pointer;}' +
+            ' .next23, .prev23, .counter23{color: red;font-weight: bold;margin: 10px 0 0 13px;display: inline-block; cursor:pointer;}' +
             ' .total23{color: white; text-align: center; margin-top: 5px; } </style>';
 
         this.init = function (settings) {
@@ -50,6 +51,7 @@
             this.main.paint();
             this.main.createWidget();
             this.main.next();
+            this.main.prev();
         };
 
         this.main = {
@@ -111,13 +113,26 @@
             },
             next: function () {
                 $(_that.settings.selectors.next).on('click', function () {
-                    _that.main.jump(comments_id[cur_comment]);
-                    $(_that.settings.selectors.counter).text(cur_comment + ' of ' + comments_id.length);
-                    if (cur_comment >= comments_id.length) {
+                    cur_comment++;
+                    _that.main.jump(comments_id[cur_comment - 1]);
+                    $(_that.settings.selectors.counter).text(cur_comment + ' of ' + (comments_id.length));
+                    if ((cur_comment) == comments_id.length) {
                         cur_comment = 0;
                     }
+                });
+            },
+            prev: function () {
+                $(_that.settings.selectors.prev).on('click', function () {
+                    if (cur_comment == 0) {
+                        cur_comment = comments_id.length;
+                    }
                     else {
-                        cur_comment++;
+                        cur_comment--;
+                    }
+                    _that.main.jump(comments_id[cur_comment - 1]);
+                    $(_that.settings.selectors.counter).text(cur_comment + ' of ' + (comments_id.length));
+                    if ((cur_comment) == 1) {
+                        cur_comment = (comments_id.length + 1);
                     }
                 });
             },
@@ -129,6 +144,7 @@
                 }
                 output.push('<div class="as223123widget">');
                 output.push('<div class="total23">' + size + ' links found</div>');
+                output.push('<span class="prev23">Prev</span>');
                 output.push('<span class="next23">Next</span>');
                 output.push('<span class="counter23"></span>');
                 output.push('</div>');
